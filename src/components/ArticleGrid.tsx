@@ -1,7 +1,6 @@
 // src/components/ArticleGrid.tsx
 import React from "react";
-import { Article } from "../services/newsApi";
-
+import { Article } from "../types";
 interface ArticleGridProps {
   articles: Article[];
 }

@@ -15,6 +15,8 @@ const PreferencesContext = createContext<PreferencesContextType>(
   {} as PreferencesContextType
 );
 
+const availableSources = ["NewsAPI", "The Guardian", "New York Times"];
+
 export const PreferencesProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
@@ -22,7 +24,7 @@ export const PreferencesProvider: React.FC<{ children: React.ReactNode }> = ({
     const localData = localStorage.getItem("news-preferences");
     return localData
       ? JSON.parse(localData)
-      : { sources: [], categories: [], authors: [] };
+      : { sources: availableSources, categories: [], authors: [] };
   });
 
   useEffect(() => {

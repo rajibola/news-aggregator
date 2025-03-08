@@ -56,53 +56,86 @@ const normalizeNYTimes = (articles: any[]): Article[] =>
   }));
 
 export const fetchNews = async (
-  params: NewsFetchParams
+  params: NewsFetchParams,
+  selectedSources: string[]
 ): Promise<Article[]> => {
-  const [newsAPI, guardian, nyTimes] = await Promise.allSettled([
-    axios.get("https://newsapi.org/v2/top-headlines", {
-      params: {
-        apiKey: API_KEYS.NEWS_API,
-        q: params.q || "news",
-        from: params.fromDate,
-        ...(params.categories && !params.sources
-          ? { category: params.categories.join(",") }
-          : {}),
-        ...(params.sources && !params.categories
-          ? {
-              sources: params.sources
-                .filter((source) => source !== "NewsAPI")
-                .join(","),
-            }
-          : {}),
-      },
-    }),
-    axios.get("https://content.guardianapis.com/search", {
-      params: {
-        "api-key": API_KEYS.GUARDIAN,
-        q: params.q + " " + params.sources?.join(" OR "),
-        "from-date": params.fromDate,
-        section: params.categories?.join("|"),
-      },
-    }),
-    axios.get("https://api.nytimes.com/svc/search/v2/articlesearch.json", {
-      params: {
-        "api-key": API_KEYS.NYTIMES,
-        q: params.q,
-        begin_date: params.fromDate?.replace(/-/g, ""),
-        fq: params.sources?.join(" OR "),
-      },
-    }),
-  ]);
+  const apiCalls = [];
 
-  return [
-    ...(newsAPI.status === "fulfilled"
-      ? normalizeNewsAPI(newsAPI.value.data.articles)
-      : []),
-    ...(guardian.status === "fulfilled"
-      ? normalizeGuardian(guardian.value.data.response.results)
-      : []),
-    ...(nyTimes.status === "fulfilled"
-      ? normalizeNYTimes(nyTimes.value.data.response.docs)
-      : []),
-  ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  // Prepare API calls based on selected sources
+  if (selectedSources.includes("NewsAPI")) {
+    apiCalls.push(
+      axios.get("https://newsapi.org/v2/top-headlines", {
+        params: {
+          apiKey: API_KEYS.NEWS_API,
+          q: params.q || "news",
+          from: params.fromDate,
+          ...(params.categories && !params.sources
+            ? { category: params.categories.join(",") }
+            : {}),
+        },
+      })
+    );
+  }
+
+  if (selectedSources.includes("The Guardian")) {
+    apiCalls.push(
+      axios.get("https://content.guardianapis.com/search", {
+        params: {
+          "api-key": API_KEYS.GUARDIAN,
+          q: params.q,
+          "from-date": params.fromDate,
+          section: params.categories?.join("|"),
+        },
+      })
+    );
+  }
+
+  if (selectedSources.includes("New York Times")) {
+    apiCalls.push(
+      axios.get("https://api.nytimes.com/svc/search/v2/articlesearch.json", {
+        params: {
+          "api-key": API_KEYS.NYTIMES,
+          q: params.q,
+          begin_date: params.fromDate?.replace(/-/g, ""),
+          fq: params.sources?.join(" OR "),
+        },
+      })
+    );
+  }
+
+  // Execute all API calls
+  const results = await Promise.allSettled(apiCalls);
+
+  // Normalize results based on the selected sources
+  const normalizedResults: Article[] = [];
+
+  // Iterate over selected sources and normalize results
+  selectedSources.forEach((source, index) => {
+    if (results[index]?.status === "fulfilled") {
+      switch (source) {
+        case "NewsAPI":
+          normalizedResults.push(
+            ...normalizeNewsAPI(results[index].value.data.articles || [])
+          );
+          break;
+        case "The Guardian":
+          normalizedResults.push(
+            ...normalizeGuardian(
+              results[index].value.data.response.results || []
+            )
+          );
+          break;
+        case "New York Times":
+          normalizedResults.push(
+            ...normalizeNYTimes(results[index].value.data.response.docs || [])
+          );
+          break;
+      }
+    }
+  });
+
+  // Sort the articles
+  return normalizedResults.sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
 };

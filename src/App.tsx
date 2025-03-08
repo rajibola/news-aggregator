@@ -8,10 +8,12 @@ import PreferencesModal from "./components/PreferencesModal";
 import LoadingSkeleton from "./components/LoadingSkeleton";
 import ErrorMessage from "./components/ErrorMessage";
 import { NewsFetchParams } from "./types";
+import { usePreferences } from "./context/PreferencesContext";
 
 export default function App() {
   const [searchParams, setSearchParams] = useState<NewsFetchParams>({});
-  const { data, isLoading, error } = useNews(searchParams);
+  const { preferences } = usePreferences();
+  const { data, isLoading, error } = useNews(searchParams, preferences.sources);
 
   return (
     <div className="min-h-screen bg-gray-50">
