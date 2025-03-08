@@ -59,13 +59,17 @@ export const fetchNews = async (
   params: NewsFetchParams
 ): Promise<Article[]> => {
   const [newsAPI, guardian, nyTimes] = await Promise.allSettled([
-    axios.get("https://newsapi.org/v2/everything", {
+    axios.get("https://newsapi.org/v2/top-headlines", {
       params: {
         apiKey: API_KEYS.NEWS_API,
         q: params.q || "news",
         from: params.fromDate,
-        sources: params.sources?.join(","),
-        category: params.categories?.join(","),
+        ...(params.categories && !params.sources
+          ? { category: params.categories.join(",") }
+          : {}),
+        ...(params.sources && !params.categories
+          ? { sources: params.sources.join(",") }
+          : {}),
       },
     }),
     axios.get("https://content.guardianapis.com/search", {
