@@ -67,9 +67,10 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onSubmit }) => {
         multiple
         className="p-2 border rounded-md"
         value={selectedSources}
-        onChange={(e) =>
-          setSelectedSources([...e.target.selectedOptions].map((o) => o.value))
-        }
+        onChange={(e) => {
+          setSelectedSources([...e.target.selectedOptions].map((o) => o.value));
+          console.log(e.target.selectedOptions);
+        }}
       >
         {preferences.sources.map((source) => (
           <option key={source} value={source}>

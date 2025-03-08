@@ -12,7 +12,7 @@ const hashString = (str: string): string => {
   for (let i = 0; i < str.length; i++) {
     const char = str.charCodeAt(i);
     hash = (hash << 5) - hash + char;
-    hash = hash & hash; // Convert to 32-bit integer
+    hash = hash & hash;
   }
   return Math.abs(hash).toString(36);
 };
@@ -68,14 +68,18 @@ export const fetchNews = async (
           ? { category: params.categories.join(",") }
           : {}),
         ...(params.sources && !params.categories
-          ? { sources: params.sources.join(",") }
+          ? {
+              sources: params.sources
+                .filter((source) => source !== "NewsAPI")
+                .join(","),
+            }
           : {}),
       },
     }),
     axios.get("https://content.guardianapis.com/search", {
       params: {
         "api-key": API_KEYS.GUARDIAN,
-        q: params.q,
+        q: params.q + " " + params.sources?.join(" OR "),
         "from-date": params.fromDate,
         section: params.categories?.join("|"),
       },
