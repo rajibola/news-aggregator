@@ -8,8 +8,9 @@ export const useNews = (params: NewsFetchParams, selectedSources: string[]) => {
     queryKey: ["news", params],
     queryFn: () => fetchNews(params, selectedSources),
     staleTime: 1000 * 60 * 5,
-    // keepPreviousData: true,
-    retry: 2,
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    retry: 0,
   });
 };

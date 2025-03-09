@@ -61,7 +61,11 @@ export const fetchNews = async (
 ): Promise<Article[]> => {
   const apiCalls = [];
 
-  // Prepare API calls based on selected sources
+  // Ensure selectedSources is used correctly
+  if (params.sources?.length) {
+    selectedSources = params.sources;
+  }
+
   if (selectedSources.includes("NewsAPI")) {
     apiCalls.push(
       axios.get("https://newsapi.org/v2/top-headlines", {
@@ -69,7 +73,7 @@ export const fetchNews = async (
           apiKey: API_KEYS.NEWS_API,
           q: params.q || "news",
           from: params.fromDate,
-          ...(params.categories && !params.sources
+          ...(params.categories
             ? { category: params.categories.join(",") }
             : {}),
         },
@@ -97,7 +101,6 @@ export const fetchNews = async (
           "api-key": API_KEYS.NYTIMES,
           q: params.q,
           begin_date: params.fromDate?.replace(/-/g, ""),
-          fq: params.sources?.join(" OR "),
         },
       })
     );
@@ -109,7 +112,6 @@ export const fetchNews = async (
   // Normalize results based on the selected sources
   const normalizedResults: Article[] = [];
 
-  // Iterate over selected sources and normalize results
   selectedSources.forEach((source, index) => {
     if (results[index]?.status === "fulfilled") {
       switch (source) {
@@ -117,6 +119,7 @@ export const fetchNews = async (
           normalizedResults.push(
             ...normalizeNewsAPI(results[index].value.data.articles || [])
           );
+          console.log("Normalized NewsAPI results:", normalizedResults);
           break;
         case "The Guardian":
           normalizedResults.push(
@@ -124,17 +127,19 @@ export const fetchNews = async (
               results[index].value.data.response.results || []
             )
           );
+          console.log("Normalized Guardian results:", normalizedResults);
           break;
         case "New York Times":
           normalizedResults.push(
             ...normalizeNYTimes(results[index].value.data.response.docs || [])
           );
+          console.log("Normalized NYTimes results:", normalizedResults);
           break;
       }
     }
   });
 
-  // Sort the articles
+  // Sort articles by date
   return normalizedResults.sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );

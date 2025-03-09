@@ -1,4 +1,3 @@
-// src/components/SearchFilters.tsx (updated)
 import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -16,6 +15,12 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onSubmit }) => {
   const [selectedSource, setSelectedSource] = useState<string | null>(null);
   const { preferences } = usePreferences();
 
+  // Load selected source from sessionStorage on mount
+  useEffect(() => {
+    const storedSource = sessionStorage.getItem("selectedSource");
+    if (storedSource) setSelectedSource(storedSource);
+  }, []);
+
   useEffect(() => {
     const params: NewsFetchParams = {
       q: searchTerm || undefined,
@@ -28,6 +33,12 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onSubmit }) => {
     const handler = setTimeout(() => onSubmit(params), 500);
     return () => clearTimeout(handler);
   }, [searchTerm, date, selectedCategories, selectedSource]);
+
+  const handleSourceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newSource = e.target.value;
+    setSelectedSource(newSource);
+    sessionStorage.setItem("selectedSource", newSource);
+  };
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-6 bg-white rounded-lg shadow-sm mb-8">
@@ -64,7 +75,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onSubmit }) => {
       </select>
 
       <select
-        onChange={(e) => setSelectedSource(e.target.value)}
+        onChange={handleSourceChange}
         value={selectedSource || ""}
         className="p-2 border rounded-md"
       >
