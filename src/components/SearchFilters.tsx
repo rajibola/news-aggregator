@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import {
   availableCategories,
   availableSources,
+  usePreferences,
 } from "../context/PreferencesContext";
 import { NewsFetchParams } from "../types";
 
@@ -24,6 +25,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const location = useLocation();
   const navigate = useNavigate();
+  const { preferences } = usePreferences();
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -61,13 +63,22 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
       q: searchTerm || undefined,
       fromDate: date?.toISOString(),
       categories:
-        selectedCategories.length > 0 ? selectedCategories : undefined,
+        selectedCategories.length > 0
+          ? selectedCategories
+          : preferences.categories,
       sources: selectedSource ? [selectedSource] : undefined,
     };
 
     const handler = setTimeout(() => onSubmit(params), 500);
     return () => clearTimeout(handler);
-  }, [searchTerm, date, selectedCategories, selectedSource, onSubmit]);
+  }, [
+    searchTerm,
+    date,
+    selectedCategories,
+    selectedSource,
+    onSubmit,
+    preferences,
+  ]);
 
   const handleSourceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newSource = e.target.value;

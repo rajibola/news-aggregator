@@ -184,11 +184,12 @@ export const fetchNews = async (
             begin_date: params.fromDate
               ? params.fromDate.replace(/-/g, "")
               : undefined,
-            fq: params.categories
-              ? `news_desk:(${params.categories
-                  .map((cat) => `"${cat}"`)
-                  .join(", ")})`
-              : undefined,
+            fq:
+              params.categories && params.categories.length
+                ? `news_desk:(${params.categories
+                    .map((cat) => `"${cat}"`)
+                    .join(", ")})`
+                : undefined,
           },
         }
       ),

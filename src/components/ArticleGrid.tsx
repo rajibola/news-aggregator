@@ -7,7 +7,7 @@ interface ArticleGridProps {
 
 const ArticleGrid: React.FC<ArticleGridProps> = ({ articles }) => {
   return (
-    <div className="columns-[300px]  gap-4">
+    <div className="columns-[300px] gap-4">
       {articles.map((article) => (
         <article
           key={article.id}
@@ -30,7 +30,7 @@ const ArticleGrid: React.FC<ArticleGridProps> = ({ articles }) => {
                 {new Date(article.date).toLocaleDateString()}
               </time>
             </div>
-            <h3 className="text-lg font-semibold mb-2 line-clamp-3">
+            <h3 className="text-lg font-semibold mb-2 line-clamp-2">
               {article.title}
             </h3>
             <p className="text-gray-600 text-sm mb-4 line-clamp-2">
