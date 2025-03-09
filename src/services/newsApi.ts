@@ -59,15 +59,16 @@ export const fetchNews = async (
   params: NewsFetchParams,
   selectedSources: string[]
 ): Promise<Article[]> => {
-  const apiCalls = [];
+  const apiCalls: Promise<any>[] = [];
 
   // Ensure selectedSources is used correctly
   if (params.sources?.length) {
     selectedSources = params.sources;
   }
 
-  if (selectedSources.includes("NewsAPI")) {
-    apiCalls.push(
+  // Create a mapping of source names to their respective API calls
+  const sourceApiCalls: { [key: string]: () => Promise<any> } = {
+    NewsAPI: () =>
       axios.get("https://newsapi.org/v2/top-headlines", {
         params: {
           apiKey: API_KEYS.NEWS_API,
@@ -77,12 +78,8 @@ export const fetchNews = async (
             ? { category: params.categories.join(",") }
             : {}),
         },
-      })
-    );
-  }
-
-  if (selectedSources.includes("The Guardian")) {
-    apiCalls.push(
+      }),
+    "The Guardian": () =>
       axios.get("https://content.guardianapis.com/search", {
         params: {
           "api-key": API_KEYS.GUARDIAN,
@@ -90,21 +87,23 @@ export const fetchNews = async (
           "from-date": params.fromDate,
           section: params.categories?.join("|"),
         },
-      })
-    );
-  }
-
-  if (selectedSources.includes("New York Times")) {
-    apiCalls.push(
+      }),
+    "New York Times": () =>
       axios.get("https://api.nytimes.com/svc/search/v2/articlesearch.json", {
         params: {
           "api-key": API_KEYS.NYTIMES,
           q: params.q,
           begin_date: params.fromDate?.replace(/-/g, ""),
         },
-      })
-    );
-  }
+      }),
+  };
+
+  // Push API calls based on selected sources
+  selectedSources.forEach((source) => {
+    if (sourceApiCalls[source]) {
+      apiCalls.push(sourceApiCalls[source]());
+    }
+  });
 
   // Execute all API calls
   const results = await Promise.allSettled(apiCalls);
@@ -119,7 +118,6 @@ export const fetchNews = async (
           normalizedResults.push(
             ...normalizeNewsAPI(results[index].value.data.articles || [])
           );
-          console.log("Normalized NewsAPI results:", normalizedResults);
           break;
         case "The Guardian":
           normalizedResults.push(
@@ -127,13 +125,11 @@ export const fetchNews = async (
               results[index].value.data.response.results || []
             )
           );
-          console.log("Normalized Guardian results:", normalizedResults);
           break;
         case "New York Times":
           normalizedResults.push(
             ...normalizeNYTimes(results[index].value.data.response.docs || [])
           );
-          console.log("Normalized NYTimes results:", normalizedResults);
           break;
       }
     }
