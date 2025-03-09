@@ -153,14 +153,15 @@ export const fetchNews = async (
       axios.get<GuardianResponse>("https://content.guardianapis.com/search", {
         params: {
           "api-key": API_KEYS.GUARDIAN,
-          q: params.q
-            ? params.q +
-              (params.categories?.length
-                ? ` AND (${params.categories.join(" OR ")})`
-                : "")
-            : params.categories?.length
-            ? `(${params.categories.join(" OR ")})`
-            : "default query",
+          ...(params.q
+            ? {
+                q:
+                  params.q +
+                  (params.categories?.length
+                    ? ` AND (${params.categories.join(" OR ")})`
+                    : ""),
+              }
+            : {}),
           "from-date": params.fromDate,
         },
       }),
