@@ -1,14 +1,13 @@
 // src/components/PreferencesModal.tsx
 import React, { useState, useEffect } from "react";
 import { Dialog } from "@headlessui/react";
-import { usePreferences } from "../context/PreferencesContext";
+import { usePreferences } from "../hooks/usePreferences";
 import { Preferences } from "../types";
 import {
   availableCategories,
   availableSources,
-} from "../context/PreferencesContext";
-
-const availableAuthors = ["Jane", "Joe", "John", "Thomas"];
+  availableAuthors,
+} from "../utils/constants";
 
 const PreferencesModal: React.FC<{
   updatePreferences: (newPreferences: Preferences) => void;

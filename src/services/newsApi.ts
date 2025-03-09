@@ -173,6 +173,20 @@ export const fetchNews = async (
                   : {}),
               }),
           "from-date": params.fromDate,
+          ...(selectedAuthors.length
+            ? {
+                tag: selectedAuthors
+                  .map(
+                    (author) =>
+                      `contributor/${author
+                        .toLowerCase()
+                        .trim()
+                        .replace(/\s+/g, "-")}`
+                  )
+                  .join(","),
+              }
+            : {}),
+          "show-fields": "thumbnail,trailText",
         },
       }),
     "New York Times": () =>

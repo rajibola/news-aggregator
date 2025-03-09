@@ -2,12 +2,9 @@ import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useLocation, useNavigate } from "react-router-dom";
-import {
-  availableCategories,
-  availableSources,
-  usePreferences,
-} from "../context/PreferencesContext";
 import { NewsFetchParams } from "../types";
+import { usePreferences } from "../hooks/usePreferences";
+import { availableCategories, availableSources } from "../utils/constants";
 
 interface SearchFiltersProps {
   onSubmit: (params: NewsFetchParams) => void;

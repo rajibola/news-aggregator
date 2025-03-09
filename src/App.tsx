@@ -8,7 +8,7 @@ import PreferencesModal from "./components/PreferencesModal";
 import LoadingSkeleton from "./components/LoadingSkeleton";
 import ErrorMessage from "./components/ErrorMessage";
 import { NewsFetchParams, Preferences } from "./types";
-import { usePreferences } from "./context/PreferencesContext";
+import { usePreferences } from "./hooks/usePreferences";
 import { BrowserRouter as Router } from "react-router-dom";
 
 export default function App() {
