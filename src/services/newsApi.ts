@@ -125,13 +125,12 @@ export const fetchNews = async (
   params: NewsFetchParams,
   selectedSources: string[]
 ): Promise<Article[]> => {
-  // Array of promises with explicit type
   const apiCalls: Promise<AxiosResponse<APIResponse>>[] = [];
 
-  // Ensure selectedSources is used correctly
-  if (params.sources?.length) {
-    selectedSources = params.sources;
-  }
+  // Use selectedSources if provided, otherwise use preferences
+  const sourcesToUse = selectedSources.length
+    ? selectedSources
+    : params.sources;
 
   // Create a mapping of source names to their respective API call functions
   const sourceApiCalls: Record<
@@ -157,7 +156,7 @@ export const fetchNews = async (
             ? {
                 q:
                   params.q +
-                  (params.categories?.length
+                  (params.categories
                     ? ` AND (${params.categories.join(" OR ")})`
                     : ""),
               }
@@ -183,11 +182,10 @@ export const fetchNews = async (
       ),
   };
 
-  // Push API calls based on selected sources
-  selectedSources.forEach((source) => {
-    if (sourceApiCalls[source]) {
-      apiCalls.push(sourceApiCalls[source]());
-    }
+  // Create API calls for each source
+  sourcesToUse?.forEach((source) => {
+    const apiCall = sourceApiCalls[source]();
+    apiCalls.push(apiCall);
   });
 
   // Execute all API calls
@@ -197,7 +195,7 @@ export const fetchNews = async (
   // Normalize results based on the selected sources
   const normalizedResults: Article[] = [];
 
-  selectedSources.forEach((source, index) => {
+  sourcesToUse?.forEach((source, index) => {
     if (results[index]?.status === "fulfilled") {
       const data = results[index].value.data;
       switch (source) {

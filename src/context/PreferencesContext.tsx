@@ -11,11 +11,18 @@ interface PreferencesContextType {
   setPreferences: (prefs: Preferences) => void;
 }
 
+export const availableSources = ["NewsAPI", "The Guardian", "New York Times"];
+export const availableCategories = [
+  "Technology",
+  "Politics",
+  "Business",
+  "Sports",
+  "Entertainment",
+];
+
 const PreferencesContext = createContext<PreferencesContextType>(
   {} as PreferencesContextType
 );
-
-const availableSources = ["NewsAPI", "The Guardian", "New York Times"];
 
 export const PreferencesProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -24,7 +31,11 @@ export const PreferencesProvider: React.FC<{ children: React.ReactNode }> = ({
     const localData = localStorage.getItem("news-preferences");
     return localData
       ? JSON.parse(localData)
-      : { sources: availableSources, categories: [], authors: [] };
+      : {
+          sources: availableSources,
+          categories: availableCategories,
+          authors: [],
+        };
   });
 
   useEffect(() => {

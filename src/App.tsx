@@ -15,7 +15,10 @@ export default function App() {
   const [searchParams, setSearchParams] = useState<NewsFetchParams>({});
   const [selectedSource, setSelectedSource] = useState<string | null>(null);
   const { preferences, setPreferences } = usePreferences();
-  const { data, isLoading, error } = useNews(searchParams, preferences.sources);
+  const { data, isLoading, error } = useNews(
+    searchParams,
+    selectedSource ? [selectedSource] : preferences.sources
+  );
 
   const resetSelectedSource = () => {
     setSearchParams((prev) => ({ ...prev, sources: undefined }));

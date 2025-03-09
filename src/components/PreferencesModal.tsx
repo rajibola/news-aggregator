@@ -3,27 +3,17 @@ import React, { useState, useEffect } from "react";
 import { Dialog } from "@headlessui/react";
 import { usePreferences } from "../context/PreferencesContext";
 import { Preferences } from "../types";
-
-const availableSources = ["NewsAPI", "The Guardian", "New York Times"];
-const availableCategories = [
-  "Technology",
-  "Politics",
-  "Business",
-  "Sports",
-  "Entertainment",
-];
+import {
+  availableCategories,
+  availableSources,
+} from "../context/PreferencesContext";
 
 const PreferencesModal: React.FC<{
   updatePreferences: (newPreferences: Preferences) => void;
   resetSelectedSource: () => void;
   selectedSource: string | null;
   setSelectedSource: (source: string | null) => void;
-}> = ({
-  updatePreferences,
-  resetSelectedSource,
-  selectedSource,
-  setSelectedSource,
-}) => {
+}> = ({ updatePreferences }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { preferences, setPreferences } = usePreferences();
 
@@ -36,21 +26,8 @@ const PreferencesModal: React.FC<{
     e.preventDefault();
     setIsOpen(false);
 
-    console.log("selectedSource", selectedSource);
-    console.log("preferences.sources", preferences.sources);
-
-    // Check if the selected source is still valid
-    const currentSource = preferences.sources.find(
-      (source) => source === selectedSource
-    );
-
-    console.log("currentSource", !currentSource);
-
-    // If the current source is not valid, reset the source filter in the URL
-    if (!currentSource) {
-      resetSelectedSource(); // Reset the source filter if the current source is removed from preferences
-      setSelectedSource(null); // Reset selectedSource to null
-    }
+    // Save preferences to localStorage
+    localStorage.setItem("preferences", JSON.stringify(preferences));
 
     updatePreferences(preferences);
   };

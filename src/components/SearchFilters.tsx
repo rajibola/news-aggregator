@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { usePreferences } from "../context/PreferencesContext";
-import { NewsFetchParams } from "../types";
 import { useLocation, useNavigate } from "react-router-dom";
+import {
+  availableCategories,
+  availableSources,
+} from "../context/PreferencesContext";
+import { NewsFetchParams } from "../types";
 
 interface SearchFiltersProps {
   onSubmit: (params: NewsFetchParams) => void;
@@ -19,7 +22,6 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
   const [searchTerm, setSearchTerm] = useState("");
   const [date, setDate] = useState<Date | null>(null);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const { preferences } = usePreferences();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -36,7 +38,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
     setDate(fromDate);
     setSelectedCategories(categories);
     setSelectedSource(source);
-  }, [location.search, preferences, setSelectedSource]);
+  }, [location.search, setSelectedSource]);
 
   useEffect(() => {
     const params = new URLSearchParams();
@@ -103,7 +105,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
         className="p-2 border rounded-md"
       >
         <option value="">Select Category</option>
-        {preferences.categories.map((category) => (
+        {availableCategories.map((category) => (
           <option key={category} value={category}>
             {category}
           </option>
@@ -116,7 +118,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
         className="p-2 border rounded-md"
       >
         <option value="">Select Source</option>
-        {preferences.sources.map((source) => (
+        {availableSources.map((source) => (
           <option key={source} value={source}>
             {source}
           </option>
