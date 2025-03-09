@@ -8,6 +8,8 @@ import {
   availableSources,
 } from "../context/PreferencesContext";
 
+const availableAuthors = ["Author 1", "Author 2", "Author 3"];
+
 const PreferencesModal: React.FC<{
   updatePreferences: (newPreferences: Preferences) => void;
   resetSelectedSource: () => void;
@@ -111,6 +113,36 @@ const PreferencesModal: React.FC<{
                           className="rounded text-blue-600"
                         />
                         <span>{category}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    Preferred Authors
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {availableAuthors.map((author) => (
+                      <label
+                        key={author}
+                        className="flex items-center space-x-2"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={preferences.authors.includes(author)}
+                          onChange={(e) => {
+                            const newAuthors = e.target.checked
+                              ? [...preferences.authors, author]
+                              : preferences.authors.filter((a) => a !== author);
+                            setPreferences({
+                              ...preferences,
+                              authors: newAuthors,
+                            });
+                          }}
+                          className="rounded text-blue-600"
+                        />
+                        <span>{author}</span>
                       </label>
                     ))}
                   </div>
