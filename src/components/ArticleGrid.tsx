@@ -7,11 +7,11 @@ interface ArticleGridProps {
 
 const ArticleGrid: React.FC<ArticleGridProps> = ({ articles }) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 columns-[300px]">
+    <div className="columns-[300px]  gap-4">
       {articles.map((article) => (
         <article
           key={article.id}
-          className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+          className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow mb-4"
         >
           {article.image && (
             <img
