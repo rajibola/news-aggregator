@@ -32,7 +32,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onSubmit }) => {
 
     const handler = setTimeout(() => onSubmit(params), 500);
     return () => clearTimeout(handler);
-  }, [searchTerm, date, selectedCategories, selectedSource]);
+  }, [searchTerm, date, selectedCategories, selectedSource, onSubmit]);
 
   const handleSourceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newSource = e.target.value;
