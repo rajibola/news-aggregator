@@ -7,13 +7,18 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 interface SearchFiltersProps {
   onSubmit: (params: NewsFetchParams) => void;
+  selectedSource: string | null;
+  setSelectedSource: (source: string | null) => void;
 }
 
-const SearchFilters: React.FC<SearchFiltersProps> = ({ onSubmit }) => {
+const SearchFilters: React.FC<SearchFiltersProps> = ({
+  onSubmit,
+  selectedSource,
+  setSelectedSource,
+}) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [date, setDate] = useState<Date | null>(null);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [selectedSource, setSelectedSource] = useState<string | null>(null);
   const { preferences } = usePreferences();
   const location = useLocation();
   const navigate = useNavigate();
@@ -31,7 +36,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onSubmit }) => {
     setDate(fromDate);
     setSelectedCategories(categories);
     setSelectedSource(source);
-  }, [location.search]);
+  }, [location.search, preferences]);
 
   useEffect(() => {
     const params = new URLSearchParams();

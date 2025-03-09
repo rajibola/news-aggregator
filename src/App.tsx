@@ -13,11 +13,13 @@ import { BrowserRouter as Router } from "react-router-dom";
 
 export default function App() {
   const [searchParams, setSearchParams] = useState<NewsFetchParams>({});
+  const [selectedSource, setSelectedSource] = useState<string | null>(null);
   const { preferences, setPreferences } = usePreferences();
   const { data, isLoading, error } = useNews(searchParams, preferences.sources);
 
   const resetSelectedSource = () => {
     setSearchParams((prev) => ({ ...prev, sources: undefined }));
+    setSelectedSource(null);
   };
 
   const updatePreferences = (newPreferences: Preferences) => {
@@ -41,14 +43,20 @@ export default function App() {
               News Aggregator
             </h1>
             <PreferencesModal
-              onPreferencesChange={resetSelectedSource}
               updatePreferences={updatePreferences}
+              resetSelectedSource={resetSelectedSource}
+              selectedSource={selectedSource}
+              setSelectedSource={setSelectedSource}
             />
           </div>
         </header>
 
         <main className="max-w-7xl mx-auto px-4 py-8">
-          <SearchFilters onSubmit={setSearchParams} />
+          <SearchFilters
+            onSubmit={setSearchParams}
+            selectedSource={selectedSource}
+            setSelectedSource={setSelectedSource}
+          />
 
           {isLoading ? (
             <LoadingSkeleton />

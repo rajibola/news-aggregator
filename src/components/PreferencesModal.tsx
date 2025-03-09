@@ -14,9 +14,16 @@ const availableCategories = [
 ];
 
 const PreferencesModal: React.FC<{
-  onPreferencesChange: () => void;
   updatePreferences: (newPreferences: Preferences) => void;
-}> = ({ onPreferencesChange, updatePreferences }) => {
+  resetSelectedSource: () => void;
+  selectedSource: string | null;
+  setSelectedSource: (source: string | null) => void;
+}> = ({
+  updatePreferences,
+  resetSelectedSource,
+  selectedSource,
+  setSelectedSource,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const { preferences, setPreferences } = usePreferences();
 
@@ -28,7 +35,23 @@ const PreferencesModal: React.FC<{
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsOpen(false);
-    onPreferencesChange();
+
+    console.log("selectedSource", selectedSource);
+    console.log("preferences.sources", preferences.sources);
+
+    // Check if the selected source is still valid
+    const currentSource = preferences.sources.find(
+      (source) => source === selectedSource
+    );
+
+    console.log("currentSource", !currentSource);
+
+    // If the current source is not valid, reset the source filter in the URL
+    if (!currentSource) {
+      resetSelectedSource(); // Reset the source filter if the current source is removed from preferences
+      setSelectedSource(null); // Reset selectedSource to null
+    }
+
     updatePreferences(preferences);
   };
 
