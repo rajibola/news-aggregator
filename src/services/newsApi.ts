@@ -143,7 +143,7 @@ export const fetchNews = async (
           apiKey: API_KEYS.NEWS_API,
           q: params.q || "news",
           from: params.fromDate,
-          ...(params.categories
+          ...(params.categories && params.categories.length
             ? { category: params.categories.join(",") }
             : {}),
         },
@@ -156,11 +156,15 @@ export const fetchNews = async (
             ? {
                 q:
                   params.q +
-                  (params.categories
+                  (params.categories && params.categories.length
                     ? ` AND (${params.categories.join(" OR ")})`
                     : ""),
               }
-            : {}),
+            : {
+                ...(params.categories && params.categories.length
+                  ? { q: `(${params.categories.join(" OR ")})` }
+                  : {}),
+              }),
           "from-date": params.fromDate,
         },
       }),
