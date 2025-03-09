@@ -13,7 +13,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onSubmit }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [date, setDate] = useState<Date | null>(null);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [selectedSources, setSelectedSources] = useState<string[]>([]);
+  const [selectedSource, setSelectedSource] = useState<string | null>(null);
   const { preferences } = usePreferences();
 
   useEffect(() => {
@@ -22,12 +22,12 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onSubmit }) => {
       fromDate: date?.toISOString(),
       categories:
         selectedCategories.length > 0 ? selectedCategories : undefined,
-      sources: selectedSources.length > 0 ? selectedSources : undefined,
+      sources: selectedSource ? [selectedSource] : undefined,
     };
 
     const handler = setTimeout(() => onSubmit(params), 500);
     return () => clearTimeout(handler);
-  }, [searchTerm, date, selectedCategories, selectedSources]);
+  }, [searchTerm, date, selectedCategories, selectedSource]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-6 bg-white rounded-lg shadow-sm mb-8">
@@ -64,14 +64,11 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onSubmit }) => {
       </select>
 
       <select
-        multiple
+        onChange={(e) => setSelectedSource(e.target.value)}
+        value={selectedSource || ""}
         className="p-2 border rounded-md"
-        value={selectedSources}
-        onChange={(e) => {
-          setSelectedSources([...e.target.selectedOptions].map((o) => o.value));
-          console.log(e.target.selectedOptions);
-        }}
       >
+        <option value="">Select Source</option>
         {preferences.sources.map((source) => (
           <option key={source} value={source}>
             {source}
