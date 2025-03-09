@@ -7,7 +7,7 @@ interface ArticleGridProps {
 
 const ArticleGrid: React.FC<ArticleGridProps> = ({ articles }) => {
   return (
-    <div className="columns-[300px] gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       {articles.map((article) => (
         <article
           key={article.id}
