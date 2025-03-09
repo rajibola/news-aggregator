@@ -101,6 +101,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
         onChange={setDate}
         className="p-2 border rounded-md w-full"
         placeholderText="Filter by date"
+        enableTabLoop={false}
       />
 
       <select
