@@ -30,8 +30,12 @@ const ArticleGrid: React.FC<ArticleGridProps> = ({ articles }) => {
                 {new Date(article.date).toLocaleDateString()}
               </time>
             </div>
-            <h3 className="text-lg font-semibold mb-2">{article.title}</h3>
-            <p className="text-gray-600 text-sm mb-4">{article.excerpt}</p>
+            <h3 className="text-lg font-semibold mb-2 line-clamp-3">
+              {article.title}
+            </h3>
+            <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+              {article.excerpt}
+            </p>
             <a
               href={article.url}
               className="text-blue-600 hover:text-blue-800 font-medium text-sm"
