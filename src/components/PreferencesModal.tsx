@@ -1,4 +1,3 @@
-// src/components/PreferencesModal.tsx
 import React, { useState, useEffect } from "react";
 import { Dialog } from "@headlessui/react";
 import { usePreferences } from "../hooks/usePreferences";
@@ -11,9 +10,6 @@ import {
 
 const PreferencesModal: React.FC<{
   updatePreferences: (newPreferences: Preferences) => void;
-  resetSelectedSource: () => void;
-  selectedSource: string | null;
-  setSelectedSource: (source: string | null) => void;
 }> = ({ updatePreferences }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { preferences, setPreferences } = usePreferences();
@@ -26,10 +22,6 @@ const PreferencesModal: React.FC<{
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsOpen(false);
-
-    // Save preferences to localStorage
-    localStorage.setItem("preferences", JSON.stringify(preferences));
-
     updatePreferences(preferences);
   };
 

@@ -1,4 +1,3 @@
-// src/App.tsx
 import { useNews } from "./hooks/useNews";
 import SearchFilters from "./components/SearchFilters";
 import ArticleGrid from "./components/ArticleGrid";
@@ -21,11 +20,6 @@ export default function App() {
     preferences.authors
   );
 
-  const resetSelectedSource = () => {
-    setSearchParams((prev) => ({ ...prev, sources: undefined }));
-    setSelectedSource(null);
-  };
-
   const updatePreferences = (newPreferences: Preferences) => {
     setPreferences(newPreferences);
   };
@@ -46,12 +40,7 @@ export default function App() {
             <h1 className="text-3xl font-bold text-gray-900">
               News Aggregator
             </h1>
-            <PreferencesModal
-              updatePreferences={updatePreferences}
-              resetSelectedSource={resetSelectedSource}
-              selectedSource={selectedSource}
-              setSelectedSource={setSelectedSource}
-            />
+            <PreferencesModal updatePreferences={updatePreferences} />
           </div>
         </header>
 

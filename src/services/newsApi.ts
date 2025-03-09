@@ -145,7 +145,7 @@ export const fetchNews = async (
     () => Promise<AxiosResponse<APIResponse>>
   > = {
     NewsAPI: () =>
-      axios.get<NewsAPIResponse>("https://newsapi.org/v2/top-headlines", {
+      axios.get<NewsAPIResponse>("https://newsapi.org/v2/everything", {
         params: {
           apiKey: API_KEYS.NEWS_API,
           q: params.q || "news",
@@ -153,6 +153,7 @@ export const fetchNews = async (
           ...(params.categories && params.categories.length
             ? { category: params.categories.join(",") }
             : {}),
+          pageSize: 20,
         },
       }),
     "The Guardian": () =>

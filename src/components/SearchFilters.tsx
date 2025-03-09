@@ -26,32 +26,20 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const term = params.get("q") || "";
-    const fromDate = params.get("fromDate")
-      ? new Date(params.get("fromDate")!)
-      : null;
-    const categories = params.getAll("categories");
-    const source = params.get("source") || null;
-
-    setSearchTerm(term);
-    setDate(fromDate);
-    setSelectedCategories(categories);
-    setSelectedSource(source);
+    setSearchTerm(params.get("q") || "");
+    setDate(params.get("fromDate") ? new Date(params.get("fromDate")!) : null);
+    setSelectedCategories(params.getAll("categories"));
+    setSelectedSource(params.get("source") || null);
   }, [location.search, setSelectedSource]);
 
   useEffect(() => {
     const params = new URLSearchParams();
     if (searchTerm) params.set("q", searchTerm);
     if (date) params.set("fromDate", date.toISOString());
-    if (selectedCategories.length > 0) {
-      selectedCategories.forEach((category) =>
-        params.append("categories", category)
-      );
-    } else {
-      params.delete("categories");
-    }
+    selectedCategories.forEach((category) =>
+      params.append("categories", category)
+    );
     if (selectedSource) params.set("source", selectedSource);
-
     navigate({ search: params.toString() });
   }, [searchTerm, date, selectedCategories, selectedSource, navigate]);
 
@@ -65,7 +53,6 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
           : preferences.categories,
       sources: selectedSource ? [selectedSource] : undefined,
     };
-
     const handler = setTimeout(() => onSubmit(params), 500);
     return () => clearTimeout(handler);
   }, [
@@ -92,7 +79,6 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
-
       <DatePicker
         selected={date}
         onChange={setDate}
@@ -100,27 +86,6 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
         placeholderText="Filter by date"
         enableTabLoop={false}
       />
-
-      <select
-        onChange={(e) => {
-          const value = e.target.value;
-          if (value) {
-            setSelectedCategories([value]);
-          } else {
-            setSelectedCategories([]);
-          }
-        }}
-        value={selectedCategories[0] || ""}
-        className="p-2 border rounded-md"
-      >
-        <option value="">Select Category</option>
-        {availableCategories.map((category) => (
-          <option key={category} value={category}>
-            {category}
-          </option>
-        ))}
-      </select>
-
       <select
         onChange={handleSourceChange}
         value={selectedSource || ""}
@@ -130,6 +95,20 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
         {availableSources.map((source) => (
           <option key={source} value={source}>
             {source}
+          </option>
+        ))}
+      </select>
+      <select
+        onChange={(e) =>
+          setSelectedCategories(e.target.value ? [e.target.value] : [])
+        }
+        value={selectedCategories[0] || ""}
+        className="p-2 border rounded-md"
+      >
+        <option value="">Select Category</option>
+        {availableCategories.map((category) => (
+          <option key={category} value={category}>
+            {category}
           </option>
         ))}
       </select>
