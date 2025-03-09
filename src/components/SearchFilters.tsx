@@ -36,7 +36,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
     setDate(fromDate);
     setSelectedCategories(categories);
     setSelectedSource(source);
-  }, [location.search, preferences]);
+  }, [location.search, preferences, setSelectedSource]);
 
   useEffect(() => {
     const params = new URLSearchParams();
@@ -46,6 +46,8 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
       selectedCategories.forEach((category) =>
         params.append("categories", category)
       );
+    } else {
+      params.delete("categories");
     }
     if (selectedSource) params.set("source", selectedSource);
 
@@ -89,7 +91,14 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
       />
 
       <select
-        onChange={(e) => setSelectedCategories([e.target.value])}
+        onChange={(e) => {
+          const value = e.target.value;
+          if (value) {
+            setSelectedCategories([value]);
+          } else {
+            setSelectedCategories([]);
+          }
+        }}
         value={selectedCategories[0] || ""}
         className="p-2 border rounded-md"
       >
