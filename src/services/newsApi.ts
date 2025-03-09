@@ -153,9 +153,12 @@ export const fetchNews = async (
       axios.get<GuardianResponse>("https://content.guardianapis.com/search", {
         params: {
           "api-key": API_KEYS.GUARDIAN,
-          q: params.q,
+          q:
+            (params.q || "default query") +
+            (params.categories?.length
+              ? ` AND (${params.categories.join(" OR ")})`
+              : ""),
           "from-date": params.fromDate,
-          section: params.categories?.join("|"),
         },
       }),
     "New York Times": () =>
@@ -164,8 +167,13 @@ export const fetchNews = async (
         {
           params: {
             "api-key": API_KEYS.NYTIMES,
-            q: params.q,
+            q: params.q || "default query",
             begin_date: params.fromDate?.replace(/-/g, ""),
+            fq: params.categories
+              ? `news_desk:(${params.categories
+                  .map((cat) => `"${cat}"`)
+                  .join(", ")})`
+              : undefined,
           },
         }
       ),
