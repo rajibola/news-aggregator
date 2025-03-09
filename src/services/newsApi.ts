@@ -127,10 +127,16 @@ export const fetchNews = async (
 ): Promise<Article[]> => {
   const apiCalls: Promise<AxiosResponse<APIResponse>>[] = [];
 
-  // Use selectedSources if provided, otherwise use preferences
-  const sourcesToUse = selectedSources.length
-    ? selectedSources
-    : params.sources;
+  // Determine sources to use
+  let sourcesToUse: string[];
+
+  if (params.sources && params.sources.length) {
+    sourcesToUse = params.sources;
+  } else if (selectedSources.length) {
+    sourcesToUse = selectedSources;
+  } else {
+    sourcesToUse = ["NewsAPI", "The Guardian", "New York Times"];
+  }
 
   // Create a mapping of source names to their respective API call functions
   const sourceApiCalls: Record<
@@ -174,8 +180,10 @@ export const fetchNews = async (
         {
           params: {
             "api-key": API_KEYS.NYTIMES,
-            q: params.q || "default query",
-            begin_date: params.fromDate?.replace(/-/g, ""),
+            q: params.q || undefined,
+            begin_date: params.fromDate
+              ? params.fromDate.replace(/-/g, "")
+              : undefined,
             fq: params.categories
               ? `news_desk:(${params.categories
                   .map((cat) => `"${cat}"`)
@@ -187,7 +195,7 @@ export const fetchNews = async (
   };
 
   // Create API calls for each source
-  sourcesToUse?.forEach((source) => {
+  sourcesToUse.forEach((source) => {
     const apiCall = sourceApiCalls[source]();
     apiCalls.push(apiCall);
   });
@@ -199,32 +207,25 @@ export const fetchNews = async (
   // Normalize results based on the selected sources
   const normalizedResults: Article[] = [];
 
-  sourcesToUse?.forEach((source, index) => {
+  sourcesToUse.forEach((source, index) => {
     if (results[index]?.status === "fulfilled") {
       const data = results[index].value.data;
       switch (source) {
         case "NewsAPI":
           normalizedResults.push(
-            ...normalizeNewsAPI(
-              // Cast to NewsAPIResponse
-              (data as NewsAPIResponse).articles || []
-            )
+            ...normalizeNewsAPI((data as NewsAPIResponse).articles || [])
           );
           break;
         case "The Guardian":
           normalizedResults.push(
             ...normalizeGuardian(
-              // Cast to GuardianResponse
               (data as GuardianResponse).response.results || []
             )
           );
           break;
         case "New York Times":
           normalizedResults.push(
-            ...normalizeNYTimes(
-              // Cast to NYTimesResponse
-              (data as NYTimesResponse).response.docs || []
-            )
+            ...normalizeNYTimes((data as NYTimesResponse).response.docs || [])
           );
           break;
       }
