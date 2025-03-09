@@ -93,6 +93,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
         value={selectedCategories[0] || ""}
         className="p-2 border rounded-md"
       >
+        <option value="">Select Category</option>
         {preferences.categories.map((category) => (
           <option key={category} value={category}>
             {category}
