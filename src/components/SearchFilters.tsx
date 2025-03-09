@@ -89,14 +89,9 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
       />
 
       <select
-        multiple
+        onChange={(e) => setSelectedCategories([e.target.value])}
+        value={selectedCategories[0] || ""}
         className="p-2 border rounded-md"
-        value={selectedCategories}
-        onChange={(e) =>
-          setSelectedCategories(
-            [...e.target.selectedOptions].map((o) => o.value)
-          )
-        }
       >
         {preferences.categories.map((category) => (
           <option key={category} value={category}>
