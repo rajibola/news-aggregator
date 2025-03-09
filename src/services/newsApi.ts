@@ -123,7 +123,8 @@ type APIResponse = NewsAPIResponse | GuardianResponse | NYTimesResponse;
 
 export const fetchNews = async (
   params: NewsFetchParams,
-  selectedSources: string[]
+  selectedSources: string[],
+  selectedAuthors: string[]
 ): Promise<Article[]> => {
   const apiCalls: Promise<AxiosResponse<APIResponse>>[] = [];
 
@@ -184,12 +185,20 @@ export const fetchNews = async (
             begin_date: params.fromDate
               ? params.fromDate.replace(/-/g, "")
               : undefined,
-            fq:
+            fq: [
               params.categories && params.categories.length
                 ? `news_desk:(${params.categories
                     .map((cat) => `"${cat}"`)
                     .join(", ")})`
-                : undefined,
+                : null,
+              selectedAuthors.length
+                ? `byline:(${selectedAuthors
+                    .map((author) => `"${author}"`)
+                    .join(" OR ")})`
+                : null,
+            ]
+              .filter(Boolean)
+              .join(" AND "),
           },
         }
       ),

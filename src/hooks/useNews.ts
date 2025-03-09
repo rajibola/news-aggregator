@@ -3,10 +3,14 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchNews } from "../services/newsApi";
 import { NewsFetchParams } from "../types";
 
-export const useNews = (params: NewsFetchParams, selectedSources: string[]) => {
+export const useNews = (
+  params: NewsFetchParams,
+  selectedSources: string[],
+  selectedAuthors: string[]
+) => {
   return useQuery({
     queryKey: ["news", params],
-    queryFn: () => fetchNews(params, selectedSources),
+    queryFn: () => fetchNews(params, selectedSources, selectedAuthors),
     staleTime: 1000 * 60 * 5,
     refetchOnWindowFocus: false,
     refetchOnMount: false,

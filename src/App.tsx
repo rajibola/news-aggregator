@@ -17,7 +17,8 @@ export default function App() {
   const { preferences, setPreferences } = usePreferences();
   const { data, isLoading, error } = useNews(
     searchParams,
-    selectedSource ? [selectedSource] : preferences.sources
+    selectedSource ? [selectedSource] : preferences.sources,
+    preferences.authors
   );
 
   const resetSelectedSource = () => {

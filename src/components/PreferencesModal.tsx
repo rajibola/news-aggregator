@@ -8,7 +8,7 @@ import {
   availableSources,
 } from "../context/PreferencesContext";
 
-const availableAuthors = ["Author 1", "Author 2", "Author 3"];
+const availableAuthors = ["Jane", "Joe", "John", "Thomas"];
 
 const PreferencesModal: React.FC<{
   updatePreferences: (newPreferences: Preferences) => void;
