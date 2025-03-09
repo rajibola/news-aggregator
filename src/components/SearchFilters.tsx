@@ -3,6 +3,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { usePreferences } from "../context/PreferencesContext";
 import { NewsFetchParams } from "../types";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface SearchFiltersProps {
   onSubmit: (params: NewsFetchParams) => void;
@@ -14,12 +15,37 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onSubmit }) => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedSource, setSelectedSource] = useState<string | null>(null);
   const { preferences } = usePreferences();
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  // Load selected source from sessionStorage on mount
   useEffect(() => {
-    const storedSource = sessionStorage.getItem("selectedSource");
-    if (storedSource) setSelectedSource(storedSource);
-  }, []);
+    const params = new URLSearchParams(location.search);
+    const term = params.get("q") || "";
+    const fromDate = params.get("fromDate")
+      ? new Date(params.get("fromDate")!)
+      : null;
+    const categories = params.getAll("categories");
+    const source = params.get("source") || null;
+
+    setSearchTerm(term);
+    setDate(fromDate);
+    setSelectedCategories(categories);
+    setSelectedSource(source);
+  }, [location.search]);
+
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (searchTerm) params.set("q", searchTerm);
+    if (date) params.set("fromDate", date.toISOString());
+    if (selectedCategories.length > 0) {
+      selectedCategories.forEach((category) =>
+        params.append("categories", category)
+      );
+    }
+    if (selectedSource) params.set("source", selectedSource);
+
+    navigate({ search: params.toString() });
+  }, [searchTerm, date, selectedCategories, selectedSource, navigate]);
 
   useEffect(() => {
     const params: NewsFetchParams = {

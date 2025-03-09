@@ -1,7 +1,8 @@
 // src/components/PreferencesModal.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Dialog } from "@headlessui/react";
 import { usePreferences } from "../context/PreferencesContext";
+import { Preferences } from "../types";
 
 const availableSources = ["NewsAPI", "The Guardian", "New York Times"];
 const availableCategories = [
@@ -12,13 +13,23 @@ const availableCategories = [
   "Entertainment",
 ];
 
-const PreferencesModal: React.FC = () => {
+const PreferencesModal: React.FC<{
+  onPreferencesChange: () => void;
+  updatePreferences: (newPreferences: Preferences) => void;
+}> = ({ onPreferencesChange, updatePreferences }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { preferences, setPreferences } = usePreferences();
+
+  // Persist preferences to localStorage
+  useEffect(() => {
+    localStorage.setItem("preferences", JSON.stringify(preferences));
+  }, [preferences]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsOpen(false);
+    onPreferencesChange();
+    updatePreferences(preferences);
   };
 
   return (
