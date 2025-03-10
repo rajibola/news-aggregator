@@ -1,11 +1,17 @@
 // src/components/ArticleGrid.tsx
 import React from "react";
 import { Article } from "../types";
+import EmptyState from "./EmptyState";
+
 interface ArticleGridProps {
   articles: Article[];
 }
 
 const ArticleGrid: React.FC<ArticleGridProps> = ({ articles }) => {
+  if (articles.length === 0) {
+    return <EmptyState />;
+  }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       {articles.map((article) => (
