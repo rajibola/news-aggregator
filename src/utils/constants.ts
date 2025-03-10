@@ -1,12 +1,16 @@
-export const availableSources = ["NewsAPI", "The Guardian", "New York Times"];
-export const availableCategories = [
+export const availableSources: string[] = [
+  "NewsAPI",
+  "The Guardian",
+  "New York Times",
+];
+export const availableCategories: string[] = [
   "Technology",
   "Politics",
   "Business",
   "Sports",
   "Entertainment",
 ];
-export const availableAuthors = [
+export const availableAuthors: string[] = [
   "Jane",
   "Joe",
   "Jane Doe",

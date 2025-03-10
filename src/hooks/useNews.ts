@@ -1,7 +1,6 @@
 // src/hooks/useNews.ts
 import { useQuery } from "@tanstack/react-query";
 import { fetchNews } from "../services/newsApi";
-import { NewsFetchParams } from "../types";
 
 export const useNews = (
   params: NewsFetchParams,

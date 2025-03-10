@@ -2,21 +2,19 @@ import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useLocation, useNavigate } from "react-router-dom";
-import { NewsFetchParams } from "../types";
 import { usePreferences } from "../hooks/usePreferences";
 import { availableCategories, availableSources } from "../utils/constants";
-
 interface SearchFiltersProps {
   onSubmit: (params: NewsFetchParams) => void;
   selectedSource: string | null;
   setSelectedSource: (source: string | null) => void;
 }
 
-const SearchFilters: React.FC<SearchFiltersProps> = ({
+const SearchFilters = ({
   onSubmit,
   selectedSource,
   setSelectedSource,
-}) => {
+}: SearchFiltersProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [date, setDate] = useState<Date | null>(null);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);

@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Dialog } from "@headlessui/react";
 import { usePreferences } from "../hooks/usePreferences";
-import { Preferences } from "../types";
 import {
   availableCategories,
   availableSources,
   availableAuthors,
 } from "../utils/constants";
 
-const PreferencesModal: React.FC<{
+const PreferencesModal = ({
+  updatePreferences,
+}: {
   updatePreferences: (newPreferences: Preferences) => void;
-}> = ({ updatePreferences }) => {
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const { preferences, setPreferences } = usePreferences();
 
@@ -63,7 +64,9 @@ const PreferencesModal: React.FC<{
                           onChange={(e) => {
                             const newSources = e.target.checked
                               ? [...preferences.sources, source]
-                              : preferences.sources.filter((s) => s !== source);
+                              : preferences.sources.filter(
+                                  (s: string) => s !== source
+                                );
                             setPreferences({
                               ...preferences,
                               sources: newSources,
@@ -94,7 +97,7 @@ const PreferencesModal: React.FC<{
                             const newCategories = e.target.checked
                               ? [...preferences.categories, category]
                               : preferences.categories.filter(
-                                  (c) => c !== category
+                                  (c: string) => c !== category
                                 );
                             setPreferences({
                               ...preferences,
@@ -125,7 +128,9 @@ const PreferencesModal: React.FC<{
                           onChange={(e) => {
                             const newAuthors = e.target.checked
                               ? [...preferences.authors, author]
-                              : preferences.authors.filter((a) => a !== author);
+                              : preferences.authors.filter(
+                                  (a: string) => a !== author
+                                );
                             setPreferences({
                               ...preferences,
                               authors: newAuthors,

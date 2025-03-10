@@ -1,11 +1,7 @@
-// src/components/ErrorMessage.tsx
-import React from "react";
-import { ErrorMessageProps } from "../types";
-
-const ErrorMessage: React.FC<ErrorMessageProps> = ({
+const ErrorMessage = ({
   message = "Failed to load articles",
   onRetry,
-}) => {
+}: ErrorMessageProps) => {
   return (
     <div className="p-8 text-center bg-red-50 rounded-lg">
       <div className="text-red-600 font-medium mb-4">⚠️ {message}</div>

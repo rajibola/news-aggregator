@@ -1,13 +1,10 @@
-// src/components/ArticleGrid.tsx
-import React from "react";
-import { Article } from "../types";
 import EmptyState from "./EmptyState";
 
 interface ArticleGridProps {
   articles: Article[];
 }
 
-const ArticleGrid: React.FC<ArticleGridProps> = ({ articles }) => {
+const ArticleGrid = ({ articles }: ArticleGridProps) => {
   if (articles.length === 0) {
     return <EmptyState />;
   }
@@ -19,13 +16,17 @@ const ArticleGrid: React.FC<ArticleGridProps> = ({ articles }) => {
           key={article.id}
           className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow mb-4"
         >
-          {article.image && (
+          {article.image ? (
             <img
               src={article.image}
               alt={article.title}
               className="w-full h-48 object-cover min-h-48"
               loading="lazy"
             />
+          ) : (
+            <div className="relative h-48 bg-gray-200 flex items-center justify-center">
+              <p className="text-gray-500">No image available</p>
+            </div>
           )}
           <div className="p-4">
             <div className="flex justify-between items-start mb-2">

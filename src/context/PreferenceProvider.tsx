@@ -1,12 +1,9 @@
-import { useEffect, useState } from "react";
-import { PreferencesContext } from "./PreferencesContext";
+import { PropsWithChildren, useEffect, useState } from "react";
 import { availableSources } from "../utils/constants";
-import { Preferences } from "../types";
-import { saveToLocalStorage, getFromLocalStorage } from "../utils/storage";
+import { getFromLocalStorage, saveToLocalStorage } from "../utils/storage";
+import { PreferencesContext } from "./PreferencesContext";
 
-export const PreferencesProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const PreferencesProvider = ({ children }: PropsWithChildren) => {
   const [preferences, setPreferences] = useState<Preferences>(() => {
     return (
       getFromLocalStorage("news-preferences") || {

@@ -1,5 +1,4 @@
 import axios, { AxiosResponse } from "axios";
-import { Article, NewsFetchParams } from "../types";
 
 // API keys
 const API_KEYS = {
@@ -18,26 +17,13 @@ const hashString = (str: string): string => {
   }
   return Math.abs(hash).toString(36);
 };
-
-// Define interfaces for the expected article structures
-export interface NewsAPIArticle {
-  title: string;
-  description: string;
-  source: { name: string };
-  publishedAt: string;
-  url: string;
-  urlToImage: string;
-  category?: string[];
-  author?: string;
-}
-
 interface NewsAPIResponse {
   status: string;
   totalResults: number;
   articles: NewsAPIArticle[];
 }
 
-export interface GuardianArticle {
+interface GuardianArticle {
   id: string;
   webTitle: string;
   fields?: { trailText: string; thumbnail: string };

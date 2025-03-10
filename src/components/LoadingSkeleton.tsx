@@ -1,8 +1,4 @@
-// src/components/LoadingSkeleton.tsx
-import React from "react";
-import { LoadingSkeletonProps } from "../types";
-
-const LoadingSkeleton: React.FC<LoadingSkeletonProps> = ({ items = 8 }) => {
+const LoadingSkeleton = ({ items = 8 }: LoadingSkeletonProps) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       {Array.from({ length: items }).map((_, index) => (
