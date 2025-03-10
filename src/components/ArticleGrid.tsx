@@ -23,7 +23,7 @@ const ArticleGrid: React.FC<ArticleGridProps> = ({ articles }) => {
             <img
               src={article.image}
               alt={article.title}
-              className="w-full h-48 object-cover"
+              className="w-full h-48 object-cover min-h-48"
               loading="lazy"
             />
           )}
